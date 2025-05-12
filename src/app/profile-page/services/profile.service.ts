@@ -4,7 +4,7 @@ import { Profile } from '../types/profile.type';
 import { api } from '../../constants/api.constants';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ProfileService {
   api = api;
@@ -12,5 +12,9 @@ export class ProfileService {
 
   getUserInformation() {
     return this.http.get<Profile>(`${api}/users`);
+  }
+
+  updateUser(userId: string, payload: {}) {
+    return this.http.put<Profile>(`api/users/${userId}`, payload);
   }
 }
