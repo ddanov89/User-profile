@@ -14,7 +14,7 @@ export const routes: Routes = [
   {
     path: 'edit/:userId',
     loadComponent: () =>
-      import('./edit-page/edit-page.component').then(
+      import('./profile-page/edit-page/edit-page.component').then(
         (c) => c.EditPageComponent
       ),
   },
