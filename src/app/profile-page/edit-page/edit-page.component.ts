@@ -10,6 +10,10 @@ import { ProfileService } from '../services/profile.service';
 import { Subscription } from 'rxjs';
 import { ProfileUpdateDTO } from '../dtos/profile.dto';
 import { LoaderComponent } from '../../loader/loader.component';
+import { Profile } from '../types/profile.type';
+import { select, Store } from '@ngrx/store';
+import { loadUsers, updateUser } from '../../state/actions/profile.actions';
+import { selectUserById } from '../../state/selectors/profile.selectors';
 
 @Component({
   selector: 'app-edit-page',
@@ -19,12 +23,10 @@ import { LoaderComponent } from '../../loader/loader.component';
   styleUrl: './edit-page.component.css',
 })
 export class EditPageComponent implements OnInit, OnDestroy {
-
-  profileToUpdate: ProfileUpdateDTO | null | undefined;
-  avatarUrl: string = 'https://avatars.githubusercontent.com/u/583231?v=4'; 
+  avatarUrl: string = 'https://avatars.githubusercontent.com/u/583231?v=4';
 
   isSubmitting = false;
-  
+
   editForm = new FormGroup({
     name: new FormControl('', [Validators.required]),
     username: new FormControl('', [
@@ -48,106 +50,115 @@ export class EditPageComponent implements OnInit, OnDestroy {
   userSubscription: Subscription | null = null;
 
   constructor(
-    private profileService: ProfileService,
+    private store: Store,
     private route: ActivatedRoute,
     private router: Router
   ) {}
 
   ngOnInit(): void {
     const userId = this.route.snapshot.params['userId'];
-    this.userSubscription = this.profileService
-      .getUserById(userId)
-      .subscribe((user) => {
-        if (!user) return;
 
-        this.setAvatarUrl(user.avatar);
+    this.store.dispatch(loadUsers());
 
-        this.editForm.patchValue({
-          name: user.name,
-          website: user.website,
-          username: user.username,
-          email: user.email,
-          phone: user.phone,
-          company: {
-            name: user.company?.name ?? '',
-          },
-          address: {
-            street: user.address?.street ?? '',
-            suite: user.address?.suite ?? '',
-            city: user.address?.city ?? '',
-            zipcode: user.address?.zipcode ?? '',
-          },
-        });
+    // Select the user by ID from the store
+    this.userSubscription = this.store
+      .pipe(select(selectUserById(userId))) // Selector to get user by ID
+      .subscribe((user: Profile | undefined) => {
+        if (user) {
+          this.setAvatarUrl(user.avatar);
+          this.editForm.patchValue({
+            name: user.name,
+            username: user.username,
+            email: user.email,
+            phone: user.phone,
+            website: user.website,
+            company: {
+              name: user.company?.name ?? '',
+            },
+            address: {
+              street: user.address?.street ?? '',
+              suite: user.address?.suite ?? '',
+              city: user.address?.city ?? '',
+              zipcode: user.address?.zipcode ?? '',
+            },
+          });
+        }
       });
   }
 
   editUser() {
     const userId = this.route.snapshot.params['userId'];
-
     this.isSubmitting = true;
 
-    this.profileToUpdate = { ...this.editForm.value };
-    this.profileToUpdate.avatar = this.avatarUrl;
+    const formValue = this.editForm.value;
 
-    this.userSubscription = this.profileService
-    .updateUser(userId, this.profileToUpdate)
-    .subscribe({
-      next: (user) => {
-        this.saveUserToLocalStorage(user);
-        this.router.navigate([`/profile-page/${userId}`]);
+    const updatedProfile: Profile = {
+      id: userId,
+      avatar: this.avatarUrl,
+      name: formValue.name ?? '',
+      username: formValue.username ?? '',
+      email: formValue.email ?? '',
+      phone: formValue.phone ?? '',
+      website: formValue.website ?? '',
+      company: {
+        name: formValue.company?.name ?? '',
       },
-      error: (err) => {
-        console.error('Failed to update user:', err);
-        this.isSubmitting = false; // stop loader on error
+      address: {
+        street: formValue.address?.street ?? '',
+        suite: formValue.address?.suite ?? '',
+        city: formValue.address?.city ?? '',
+        zipcode: formValue.address?.zipcode ?? '',
       },
-      complete: () => {
-        this.isSubmitting = false; // stop loader on success
+    };
+
+    // Dispatch the updateUser action to update the state via NgRx
+    this.store.dispatch(updateUser({ userId, data: updatedProfile }));
+this.isSubmitting = false;
+    // Navigate after the state update (this could be done in an effect or after the state update completes)
+    this.router.navigate([`/profile-page/${userId}`]);
+  }
+
+  onImageChange(event: any): void {
+    const file = event.target.files[0]; // Get the selected file
+
+    if (file) {
+      // Check if the file type is an image
+      if (!file.type.startsWith('image/')) {
+        alert('Please select a valid image file.');
+        return;
       }
-    });
-  }
 
-onImageChange(event: any): void {
-  const file = event.target.files[0];  // Get the selected file
+      // Create a file reader to read the image as a base64 string
+      const reader = new FileReader();
 
-  if (file) {
-    // Check if the file type is an image
-    if (!file.type.startsWith('image/')) {
-      alert('Please select a valid image file.');
-      return;
+      reader.onload = () => {
+        this.avatarUrl = reader.result as string; // Set the new image URL to the base64 string
+      };
+
+      reader.onerror = (error) => {
+        console.error('Error reading file:', error);
+        alert('There was an error uploading your image.');
+      };
+
+      reader.readAsDataURL(file); // Read the file as base64
     }
-
-    // Create a file reader to read the image as a base64 string
-    const reader = new FileReader();
-
-    reader.onload = () => {
-      this.avatarUrl = reader.result as string; // Set the new image URL to the base64 string
-      console.log("The avatar url is: ", this.avatarUrl);
-    };
-
-    reader.onerror = (error) => {
-      console.error('Error reading file:', error);
-      alert('There was an error uploading your image.');
-    };
-
-    reader.readAsDataURL(file);  // Read the file as base64
   }
-}
 
-setAvatarUrl(avatar: File | string): void {
-  if (typeof avatar === 'string') {
-    // If it's a string (Base64 or URL), assign directly
-    this.avatarUrl = avatar;
-  } else if (avatar instanceof File) {
-    // If it's a File, use FileReader to read as Base64
-    const reader = new FileReader();
+  setAvatarUrl(avatar: File | string): void {
+    if (typeof avatar === 'string') {
+      // If it's a string (Base64 or URL), assign directly
+      this.avatarUrl = avatar;
+    } else if (avatar instanceof File) {
+      // If it's a File, use FileReader to read as Base64
+      const reader = new FileReader();
 
-    reader.onload = () => {
-      this.avatarUrl = reader.result as string;  // Convert file to Base64 string
-    };
+      reader.onload = () => {
+        this.avatarUrl = reader.result as string; // Convert file to Base64 string
+      };
 
-    reader.readAsDataURL(avatar);  // Read the file as Base64
+      reader.readAsDataURL(avatar); // Read the file as Base64
+    }
   }
-}
 
   saveUserToLocalStorage(updatedUser: { id: any }) {
     const userProfiles = JSON.parse(

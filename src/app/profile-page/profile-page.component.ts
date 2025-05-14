@@ -1,42 +1,41 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { ProfileService } from './services/profile.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Profile } from './types/profile.type';
-import { LoaderComponent } from '../loader/loader.component';
-import { Subscription } from 'rxjs';
+import { map, Subscription } from 'rxjs';
+import { Store } from '@ngrx/store';
+import { selectAllUsers } from '../state/selectors/profile.selectors';
+import { loadUsers, loadUsersSuccess } from '../state/actions/profile.actions';
 
 @Component({
   selector: 'app-profile-page',
   standalone: true,
-  imports: [LoaderComponent],
+  imports: [],
   templateUrl: './profile-page.component.html',
   styleUrl: './profile-page.component.css',
 })
 export class ProfilePageComponent implements OnInit, OnDestroy {
+  private store = inject(Store);
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
+
   currentUser: Profile | null | undefined;
 
-  defaultAvatarUrl = 'https://avatars.githubusercontent.com/u/583231?v=4'
-  profileSubscription: Subscription | undefined;
-
-  constructor(
-    private profileService: ProfileService,
-    private router: Router,
-    private route: ActivatedRoute
-  ) {}
+  defaultAvatarUrl = 'https://avatars.githubusercontent.com/u/583231?v=4';
+  profileSubscription: Subscription = new Subscription();
 
   ngOnInit(): void {
     const userId = this.route.snapshot.params['userId'];
+    this.store.dispatch(loadUsers());
 
-    this.profileSubscription = this.profileService
-      .getUserById(userId)
-      .subscribe({
-        next: (user) => {
-          this.currentUser = user;
-        },
-        error: (err) => {
-          console.error("Can't fetch data!");
-        },
+    const sub = this.store
+      .select(selectAllUsers)
+      .pipe(map((users) => users.find((user) => String(user.id) === userId)))
+      .subscribe((user) => {
+        this.currentUser = user;
       });
+
+    this.profileSubscription.add(sub);
   }
 
   launchEditForm() {
@@ -47,8 +46,6 @@ export class ProfilePageComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    if (this.profileSubscription) {
-      this.profileSubscription.unsubscribe();
-    }
+    this.profileSubscription.unsubscribe();
   }
 }
