@@ -1,0 +1,122 @@
+<main id="edit">
+  <section id="edit-container">
+    <div class="edit-container-info">
+      <h1>Edit User</h1>
+      <form name="edit-form" [formGroup]="editForm" (ngSubmit)="editUser()">
+
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" formControlName="name">
+
+        @if (editForm.get('name')?.touched) {
+        <div class="errorContainer">
+          @if (editForm.get('name')?.errors?.['required']) {
+          <p>Name is required!</p>
+          }
+          @if (editForm.get('name')?.errors?.['minlength']) {
+          <p>Name must be at least 4 characters long!</p>
+          }
+        </div>
+        }
+
+        <label for="website">Website:</label>
+        <input type="text" id="website" name="website" formControlName="website">
+
+        @if (editForm.get('website')?.touched) {
+        <div class="errorContainer">
+          @if (editForm.get('website')?.errors?.['required']) {
+          <p>Website is required!</p>
+          }
+        </div>
+        }
+
+
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" placeholder="" formControlName="username">
+
+        @if (editForm.get('username')?.touched) {
+        <div class="errorContainer">
+          @if (editForm.get('username')?.errors?.['required']) {
+          <p>Username is required!</p>
+          }
+        </div>
+        }
+
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" formControlName="email">
+
+        @if (editForm.get('email')?.touched) {
+        <div class="errorContainer">
+          @if (editForm.get('email')?.errors?.['required']) {
+          <p>Email is required!</p>
+          }
+        </div>
+        }
+
+        <label for="phone">Phone:</label>
+        <input type="text" id="phone" name="phone" formControlName="phone">
+
+        @if (editForm.get('phone')?.touched) {
+        <div class="errorContainer">
+          @if (editForm.get('phone')?.errors?.['required']) {
+          <p>Phone is required!</p>
+          }
+        </div>
+        }
+        <div formGroupName="company" class="company-info-hidden">
+          <label for="companyName">Company:</label>
+          <input type="text" id="companyName" name="companyName" formControlName="name">
+
+          @if (editForm.get('company')?.get('name')?.touched) {
+          <div class="errorContainer">
+            @if (editForm.get('company')?.get('name')?.errors?.['required']) {
+            <p>Company is required!</p>
+            }
+          </div>
+          }
+        </div>
+
+
+        <div formGroupName="address">
+
+          <label for="street">Street:</label>
+          <input type="text" id="street" name="street" formControlName="street">
+
+          @if (editForm.get('address')?.get('street')?.touched) {
+          <div class="errorContainer">
+            @if (editForm.get('address')?.get('street')?.errors?.['required']) {
+            <p>Street is required!</p>
+            }
+          </div>
+          }
+          <label for="suite">Suite:</label>
+          <input type="text" id="suite" name="suite" formControlName="suite">
+
+
+          <label for="city">City:</label>
+          <input type="text" id="city" name="city" formControlName="city">
+
+          @if (editForm.get('address')?.get('city')?.touched) {
+          <div class="errorContainer">
+            @if (editForm.get('address')?.get('city')?.errors?.['required']) {
+            <p>City is required!</p>
+            }
+          </div>
+          }
+          <label for="zipcode">Zipcode:</label>
+          <input type="text" id="zipcode" name="zipcode" formControlName="zipcode">
+
+          @if (editForm.get('address')?.get('zipcode')?.touched) {
+          <div class="errorContainer">
+            @if (editForm.get('address')?.get('zipcode')?.errors?.['required']) {
+            <p>Zipcode is required!</p>
+            }
+          </div>
+          }
+
+        </div>
+
+        <input type="submit" id="btn" [disabled]="editForm.invalid" value="Save">
+      </form>
+    </div>
+  </section>
+</main>
