@@ -15,6 +15,7 @@ import { Subscription } from 'rxjs';
 export class ProfilePageComponent implements OnInit, OnDestroy {
   currentUser: Profile | null | undefined;
 
+  defaultAvatarUrl = 'https://avatars.githubusercontent.com/u/583231?v=4'
   profileSubscription: Subscription | undefined;
 
   constructor(
