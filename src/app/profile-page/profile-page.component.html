@@ -1,1 +1,67 @@
-<p>profile-page works!</p>
+<section id="profile">
+    <div class="background-overlay"></div>
+
+    <div class="primary-section">
+        <div class="avatar">
+            <img src="https://avatars.githubusercontent.com/u/583231?v=4" alt="avatar" />
+        </div>
+
+        <div class="personal-information">
+            <div class="name">{{currentUser?.name}}</div>
+            <div class="website">{{currentUser?.website}}</div>
+
+            <div class="button">
+                <button type="button" class="edit" (click)="launchEditForm()">Edit</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="secondary-section">
+        <div class="digital-information">
+            <div class="section-label">Digital Information</div>
+            <div class="info-row">
+                <div class="name-label">Name</div>
+                <div class="name">{{currentUser?.name}}</div>
+            </div>
+            <div class="info-row">
+                <div class="username-label">Username</div>
+                <div class="username">{{currentUser?.username}}</div>
+            </div>
+            <div class="info-row">
+                <div class="email-label">Email</div>
+                <div class="email">{{currentUser?.email}}</div>
+            </div>
+            <div class="info-row">
+                <div class="phone-label">Phone</div>
+                <div class="phone">{{currentUser?.phone}}</div>
+            </div>
+            <div class="info-row">
+                <div class="company-label">Company</div>
+                <div class="company">{{currentUser?.company?.name}}</div>
+            </div>
+        </div>
+
+        <div class="address-information">
+            <div class="section-label">
+                Address
+            </div>
+            <div class="info-row">
+                <div class="address-label">Street</div>
+                <div class="street">{{ currentUser?.address?.street }}</div>
+            </div>
+            <div class="info-row">
+                <div class="address-label">Suite</div>
+                <div class="suite">{{ currentUser?.address?.suite }}</div>
+            </div>
+            <div class="info-row">
+                <div class="address-label">City</div>
+                <div class="city">{{ currentUser?.address?.city }}</div>
+            </div>
+            <div class="info-row">
+                <div class="address-label">Zip Code</div>
+                <div class="zipcode">{{ currentUser?.address?.zipcode }}</div>
+            </div>
+        </div>
+
+    </div>
+</section>
