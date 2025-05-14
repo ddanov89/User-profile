@@ -22,6 +22,41 @@
   scrollbar-color: #888 #f1f1f1;
 }
 
+.avatar {
+    position: relative;
+    display: flex;
+    justify-content: center; 
+    align-items: center;    
+    width: 100px;            
+    height: 100px;  
+} 
+
+.avatar img {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 4px solid white;
+    box-shadow: 0 0 0 5px rgba(0, 0, 0, 0.05);
+    transition: transform 0.3s ease;
+}
+
+.avatar img:hover {
+    transform: scale(0.50);
+}
+
+/* Edit icon styles */
+.avatar .edit-icon {
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+    color: white;
+    border-radius: 50%;
+    padding: 5px;
+    cursor: pointer;
+}
+
 #edit-container h1 {
   text-align: center;
   color: #050912;

@@ -6,7 +6,7 @@ export interface ProfileUpdateDTO {
   phone?: string | null;
   website?: string | null;
   company?: CompanyDTO | null;
-//   avatar?: File | string;
+  avatar?: File | string;
 }
 
 export interface AddressDTO {
