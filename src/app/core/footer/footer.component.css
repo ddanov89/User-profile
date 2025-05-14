@@ -1,0 +1,20 @@
+footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 8vh;
+  min-height: 60px;
+  width: 100%;
+  padding: 0 1rem;
+  background: linear-gradient(to top, #f0f4f8, #d9e2ec);
+  box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.05);
+  border-top: 1px solid #d1d9e6;
+  color: #334e68;
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-align: center;
+  backdrop-filter: blur(4px);
+  flex-wrap: wrap;
+  z-index: 1;
+}
