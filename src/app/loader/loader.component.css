@@ -1,0 +1,25 @@
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.4); /* dark transparent background */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000; /* on top of everything */
+}
+
+.saving-text {
+  font-size: 2rem;
+  color: white;
+  font-weight: bold;
+  animation: fadeInOut 1.2s ease-in-out infinite;
+}
+
+/* Optional subtle animation */
+@keyframes fadeInOut {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 1; }
+}

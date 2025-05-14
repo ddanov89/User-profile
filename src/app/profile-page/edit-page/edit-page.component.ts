@@ -9,11 +9,12 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ProfileService } from '../services/profile.service';
 import { Subscription } from 'rxjs';
 import { ProfileUpdateDTO } from '../dtos/profile.dto';
+import { LoaderComponent } from '../../loader/loader.component';
 
 @Component({
   selector: 'app-edit-page',
   standalone: true,
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, LoaderComponent],
   templateUrl: './edit-page.component.html',
   styleUrl: './edit-page.component.css',
 })
@@ -22,6 +23,8 @@ export class EditPageComponent implements OnInit, OnDestroy {
   profileToUpdate: ProfileUpdateDTO | null | undefined;
   avatarUrl: string = 'https://avatars.githubusercontent.com/u/583231?v=4'; 
 
+  isSubmitting = false;
+  
   editForm = new FormGroup({
     name: new FormControl('', [Validators.required]),
     username: new FormControl('', [
@@ -58,7 +61,7 @@ export class EditPageComponent implements OnInit, OnDestroy {
         if (!user) return;
 
         this.setAvatarUrl(user.avatar);
-        
+
         this.editForm.patchValue({
           name: user.name,
           website: user.website,
@@ -81,15 +84,26 @@ export class EditPageComponent implements OnInit, OnDestroy {
   editUser() {
     const userId = this.route.snapshot.params['userId'];
 
+    this.isSubmitting = true;
+
     this.profileToUpdate = { ...this.editForm.value };
     this.profileToUpdate.avatar = this.avatarUrl;
 
     this.userSubscription = this.profileService
-      .updateUser(userId, this.profileToUpdate)
-      .subscribe((user) => {
+    .updateUser(userId, this.profileToUpdate)
+    .subscribe({
+      next: (user) => {
         this.saveUserToLocalStorage(user);
         this.router.navigate([`/profile-page/${userId}`]);
-      });
+      },
+      error: (err) => {
+        console.error('Failed to update user:', err);
+        this.isSubmitting = false; // stop loader on error
+      },
+      complete: () => {
+        this.isSubmitting = false; // stop loader on success
+      }
+    });
   }
 
 onImageChange(event: any): void {

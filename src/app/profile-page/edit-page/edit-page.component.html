@@ -2,12 +2,15 @@
   <section id="edit-container">
     <div class="edit-container-info">
       <h1>Edit User</h1>
+      @if(isSubmitting){
+      <app-loader></app-loader>
+      }
       <form name="edit-form" [formGroup]="editForm" (ngSubmit)="editUser()">
 
         <div class="avatar">
           <img [src]="avatarUrl" alt="avatar" (click)="fileInput.click()" />
           <div class="edit-icon" (click)="fileInput.click()">
-            <i class="fas fa-edit"></i> <!-- FontAwesome icon -->
+            <i class="fas fa-edit"></i>
           </div>
           <input type="file" #fileInput style="display: none;" (change)="onImageChange($event)" accept="image/*" />
         </div>
@@ -126,5 +129,6 @@
         <input type="submit" id="btn" [disabled]="editForm.invalid" value="Save">
       </form>
     </div>
+
   </section>
 </main>
