@@ -10,8 +10,8 @@ import { provideHttpClient } from '@angular/common/http';
 import { provideStore } from '@ngrx/store';
 import { provideEffects } from '@ngrx/effects';
 import { provideStoreDevtools } from '@ngrx/store-devtools';
-import { profileReducer } from './state/reducers/profile.reducer';
-import { ProfileEffects } from './state/effects/profile.effects';
+import { profileReducer } from './profile-page/state/reducers/profile.reducer';
+import { ProfileEffects } from './profile-page/state/effects/profile.effects';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -20,6 +20,6 @@ export const appConfig: ApplicationConfig = {
     provideStore({ profile: profileReducer }),
     provideEffects([ProfileEffects]),
     provideStoreDevtools({ maxAge: 25, logOnly: !isDevMode() }),
-    provideZoneChangeDetection()
+    provideZoneChangeDetection(),
   ],
 };

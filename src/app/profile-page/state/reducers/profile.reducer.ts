@@ -1,11 +1,10 @@
-import { createReducer, on } from '@ngrx/store';
-import { Profile } from '../../profile-page/types/profile.type';
-import {
+import { createReducer, on } from '@ngrx/store';import {
   loadUsers,
   loadUsersFailure,
   loadUsersSuccess,
   updateUserSuccess,
 } from '../actions/profile.actions';
+import { Profile } from '../../types/profile.type';
 
 export interface ProfileState {
   users: Profile[];

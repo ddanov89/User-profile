@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { ProfileService } from '../../profile-page/services/profile.service';
+
 import {
   loadUsers,
   loadUsersFailure,
@@ -10,6 +10,7 @@ import {
   updateUserSuccess,
 } from '../actions/profile.actions';
 import { catchError, defer, map, of, switchMap, tap } from 'rxjs';
+import { ProfileService } from '../../services/profile.service';
 
 @Injectable()
 export class ProfileEffects {

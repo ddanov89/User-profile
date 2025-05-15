@@ -1,5 +1,5 @@
 import { createAction, props } from "@ngrx/store";
-import { Profile } from "../../profile-page/types/profile.type";
+import { Profile } from "../../types/profile.type"; 
 
 export const loadUsers = createAction('[Profile] Load Users');
 export const loadUsersSuccess = createAction('[Profile] Load Users Success', props<{ users: Profile[] }>());

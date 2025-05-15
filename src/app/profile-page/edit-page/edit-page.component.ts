@@ -6,14 +6,12 @@ import {
   Validators,
 } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ProfileService } from '../services/profile.service';
 import { Subscription } from 'rxjs';
-import { ProfileUpdateDTO } from '../dtos/profile.dto';
 import { LoaderComponent } from '../../loader/loader.component';
 import { Profile } from '../types/profile.type';
 import { select, Store } from '@ngrx/store';
-import { loadUsers, updateUser } from '../../state/actions/profile.actions';
-import { selectUserById } from '../../state/selectors/profile.selectors';
+import { loadUsers, updateUser } from '../state/actions/profile.actions';
+import { selectUserById } from '../state/selectors/profile.selectors';
 
 @Component({
   selector: 'app-edit-page',
@@ -113,7 +111,7 @@ export class EditPageComponent implements OnInit, OnDestroy {
 
     // Dispatch the updateUser action to update the state via NgRx
     this.store.dispatch(updateUser({ userId, data: updatedProfile }));
-this.isSubmitting = false;
+    this.isSubmitting = false;
     // Navigate after the state update (this could be done in an effect or after the state update completes)
     this.router.navigate([`/profile-page/${userId}`]);
   }

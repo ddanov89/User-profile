@@ -1,11 +1,10 @@
 import { Component, inject, OnDestroy, OnInit } from '@angular/core';
-import { ProfileService } from './services/profile.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Profile } from './types/profile.type';
 import { map, Subscription } from 'rxjs';
 import { Store } from '@ngrx/store';
-import { selectAllUsers } from '../state/selectors/profile.selectors';
-import { loadUsers, loadUsersSuccess } from '../state/actions/profile.actions';
+import { selectAllUsers } from './state/selectors/profile.selectors';
+import { loadUsers } from './state/actions/profile.actions';
 
 @Component({
   selector: 'app-profile-page',
