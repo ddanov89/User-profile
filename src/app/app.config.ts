@@ -12,6 +12,7 @@ import { provideEffects } from '@ngrx/effects';
 import { provideStoreDevtools } from '@ngrx/store-devtools';
 import { profileReducer } from './profile-page/state/reducers/profile.reducer';
 import { ProfileEffects } from './profile-page/state/effects/profile.effects';
+import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -20,6 +21,6 @@ export const appConfig: ApplicationConfig = {
     provideStore({ profile: profileReducer }),
     provideEffects([ProfileEffects]),
     provideStoreDevtools({ maxAge: 25, logOnly: !isDevMode() }),
-    provideZoneChangeDetection(),
+    provideZoneChangeDetection(), provideAnimationsAsync(),
   ],
 };

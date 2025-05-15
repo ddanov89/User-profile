@@ -5,6 +5,7 @@ import { map, Subscription } from 'rxjs';
 import { Store } from '@ngrx/store';
 import { selectAllUsers } from './state/selectors/profile.selectors';
 import { loadUsers } from './state/actions/profile.actions';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-profile-page',
@@ -14,15 +15,21 @@ import { loadUsers } from './state/actions/profile.actions';
   styleUrl: './profile-page.component.css',
 })
 export class ProfilePageComponent implements OnInit, OnDestroy {
-  private store = inject(Store);
-  private route = inject(ActivatedRoute);
-  private router = inject(Router);
+  // private store = inject(Store);
+  // private route = inject(ActivatedRoute);
+  // private router = inject(Router);
 
   currentUser: Profile | null | undefined;
 
   defaultAvatarUrl = 'https://avatars.githubusercontent.com/u/583231?v=4';
   profileSubscription: Subscription = new Subscription();
 
+    constructor(
+      private store: Store,
+      private route: ActivatedRoute,
+      private router: Router,
+      private snackBar: MatSnackBar
+    ) {}
   ngOnInit(): void {
     const userId = this.route.snapshot.params['userId'];
     this.store.dispatch(loadUsers());
@@ -32,10 +39,6 @@ export class ProfilePageComponent implements OnInit, OnDestroy {
       .pipe(map((users) => users.find((user) => String(user.id) === userId)))
       .subscribe((user) => {
         this.currentUser = user;
-        if (this.currentUser == undefined){
-          this.router.navigate(["/404"]);
-        }
-        
       });
 
     this.profileSubscription.add(sub);
@@ -45,6 +48,17 @@ export class ProfilePageComponent implements OnInit, OnDestroy {
     const userId = this.currentUser?.id;
     if (userId) {
       this.router.navigate(['/edit', userId]);
+    }else{
+      this.snackBar.open(
+            "You can't perform this action now. Please try again later.",
+            'Close',
+            {
+              duration: 5000,
+              panelClass: ['snackbar-error'], 
+              verticalPosition: 'top',
+              horizontalPosition: 'center',
+            }
+          );
     }
   }
 

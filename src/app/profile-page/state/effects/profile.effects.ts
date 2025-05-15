@@ -12,12 +12,19 @@ import {
 import { catchError, defer, map, of, switchMap, tap } from 'rxjs';
 import { ProfileService } from '../../services/profile.service';
 import { Router } from '@angular/router';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { SnackBarService } from '../../../shared/services/snackBarService';
+import {
+  errorMessages,
+  successMessages,
+} from '../../../constants/validation-messages';
 
 @Injectable()
 export class ProfileEffects {
   private actions$ = inject(Actions);
   private profileService = inject(ProfileService);
   private router = inject(Router);
+  private snackBar = inject(SnackBarService);
 
   loadUsers$ = createEffect(() =>
     this.actions$.pipe(
@@ -55,6 +62,17 @@ export class ProfileEffects {
     { dispatch: false } // This effect does not dispatch another action
   );
 
+  loadUsersFailure$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(loadUsersFailure),
+        tap(({ error }) =>
+          this.snackBar.toggleSnackBar(errorMessages.dataLoadFail)
+        )
+      ),
+    { dispatch: false }
+  );
+
   updateUser$ = createEffect(() =>
     this.actions$.pipe(
       ofType(updateUser),
@@ -85,9 +103,22 @@ export class ProfileEffects {
 
           // Save the updated users back to localStorage
           localStorage.setItem('users', JSON.stringify(updatedUsers));
+          //Show success message
+          this.snackBar.toggleSnackBar(successMessages.userUpdateSuccess);
         })
       ),
     { dispatch: false } // This effect does not dispatch any further actions
+  );
+
+  updateUserFailure$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(updateUserFailure),
+        tap(({ error }) =>
+          this.snackBar.toggleSnackBar(errorMessages.userUpdateFail)
+        )
+      ),
+    { dispatch: false }
   );
 
   navigateOnUpdateSuccess$ = createEffect(
