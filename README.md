@@ -1,6 +1,5 @@
 # Angular Profile Page 
 
-
 The current project is made using Angular 18.2.13. For data fetching it uses https://jsonplaceholder.typicode.com/ and its users resource that comprises of 10 users.
 
 ## Development Server
