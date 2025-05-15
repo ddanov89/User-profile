@@ -32,6 +32,10 @@ export class ProfilePageComponent implements OnInit, OnDestroy {
       .pipe(map((users) => users.find((user) => String(user.id) === userId)))
       .subscribe((user) => {
         this.currentUser = user;
+        if (this.currentUser == undefined){
+          this.router.navigate(["/404"]);
+        }
+        
       });
 
     this.profileSubscription.add(sub);
