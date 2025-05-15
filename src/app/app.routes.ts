@@ -2,7 +2,7 @@ import { Routes } from '@angular/router';
 import { NotFoundComponent } from './not-found/not-found.component';
 
 export const routes: Routes = [
-  { path: '', redirectTo: '', pathMatch: 'full' },
+  { path: '', redirectTo: 'profile-page/1', pathMatch: 'full' },
 
   {
     path: 'profile-page/:userId',
