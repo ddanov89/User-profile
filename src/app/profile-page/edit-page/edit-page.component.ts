@@ -5,13 +5,20 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { LoaderComponent } from '../../loader/loader.component';
 import { Profile } from '../types/profile.type';
-import { select, Store } from '@ngrx/store';
-import { loadUsers, updateUser } from '../state/actions/profile.actions';
-import { selectUserById } from '../state/selectors/profile.selectors';
+import {select, Store } from '@ngrx/store';
+import {
+  loadUsers,
+  updateUser,
+  updateUserSuccess,
+} from '../state/actions/profile.actions';
+import {
+  selectUserById,
+} from '../state/selectors/profile.selectors';
+import { Actions, ofType } from '@ngrx/effects';
 
 @Component({
   selector: 'app-edit-page',
@@ -46,16 +53,22 @@ export class EditPageComponent implements OnInit, OnDestroy {
   });
 
   userSubscription: Subscription | null = null;
+  actionsSubscription: Subscription | null = null;
 
   constructor(
     private store: Store,
     private route: ActivatedRoute,
-    private router: Router
+    private actions$: Actions
   ) {}
 
   ngOnInit(): void {
     const userId = this.route.snapshot.params['userId'];
 
+    this.actionsSubscription = this.actions$
+      .pipe(ofType(updateUserSuccess))
+      .subscribe(() => {
+        this.isSubmitting = false; // stop loader
+      });
     this.store.dispatch(loadUsers());
 
     // Select the user by ID from the store
@@ -86,8 +99,6 @@ export class EditPageComponent implements OnInit, OnDestroy {
 
   editUser() {
     const userId = this.route.snapshot.params['userId'];
-    this.isSubmitting = true;
-
     const formValue = this.editForm.value;
 
     const updatedProfile: Profile = {
@@ -109,11 +120,9 @@ export class EditPageComponent implements OnInit, OnDestroy {
       },
     };
 
+    this.isSubmitting = true;
     // Dispatch the updateUser action to update the state via NgRx
     this.store.dispatch(updateUser({ userId, data: updatedProfile }));
-    this.isSubmitting = false;
-    // Navigate after the state update (this could be done in an effect or after the state update completes)
-    this.router.navigate([`/profile-page/${userId}`]);
   }
 
   onImageChange(event: any): void {
@@ -174,6 +183,9 @@ export class EditPageComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     if (this.userSubscription) {
       this.userSubscription?.unsubscribe();
+    }
+    if (this.actionsSubscription) {
+      this.actionsSubscription?.unsubscribe();
     }
   }
 }

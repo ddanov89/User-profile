@@ -11,11 +11,13 @@ import {
 } from '../actions/profile.actions';
 import { catchError, defer, map, of, switchMap, tap } from 'rxjs';
 import { ProfileService } from '../../services/profile.service';
+import { Router } from '@angular/router';
 
 @Injectable()
 export class ProfileEffects {
   private actions$ = inject(Actions);
   private profileService = inject(ProfileService);
+  private router = inject(Router);
 
   loadUsers$ = createEffect(() =>
     this.actions$.pipe(
@@ -83,6 +85,17 @@ export class ProfileEffects {
 
           // Save the updated users back to localStorage
           localStorage.setItem('users', JSON.stringify(updatedUsers));
+        })
+      ),
+    { dispatch: false } // This effect does not dispatch any further actions
+  );
+
+  navigateOnUpdateSuccess$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(updateUserSuccess),
+        tap(({ user }) => {
+          this.router.navigate([`/profile-page/${user.id}`]);
         })
       ),
     { dispatch: false } // This effect does not dispatch any further actions
