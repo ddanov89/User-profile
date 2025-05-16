@@ -5,7 +5,7 @@
   align-items: center;
   justify-content: center;
   padding: 2rem;
-  overflow: hidden; /* Prevent outer scrollbars */
+  overflow: hidden;
 }
 
 #edit-container {
@@ -15,8 +15,8 @@
   padding: 30px;
   width: 100%;
   max-width: 500px;
-  max-height: 90vh; /* Keep it within view */
-  overflow-y: auto; /* Enable internal scroll */
+  max-height: 90vh;
+  overflow-y: auto;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
   scrollbar-width: thin;
   scrollbar-color: #888 #f1f1f1;
@@ -45,12 +45,11 @@
     transform: scale(0.50);
 }
 
-/* Edit icon styles */
 .avatar .edit-icon {
     position: absolute;
     bottom: 5px;
     right: 5px;
-    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+    background-color: rgba(0, 0, 0, 0.5);
     color: white;
     border-radius: 50%;
     padding: 5px;
@@ -86,7 +85,6 @@ form input[type="email"] {
   color: #050912;
 }
 
-/* Group styles for nested form groups */
 form div[formGroupName] {
   display: flex;
   flex-direction: column;

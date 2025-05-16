@@ -4,11 +4,11 @@
   left: 0;
   width: 100vw;
   height: 100vh;
-  background-color: rgba(0, 0, 0, 0.4); /* dark transparent background */
+  background-color: rgba(0, 0, 0, 0.4);
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 1000; /* on top of everything */
+  z-index: 1000;
 }
 
 .saving-text {
@@ -18,7 +18,6 @@
   animation: fadeInOut 1.2s ease-in-out infinite;
 }
 
-/* Optional subtle animation */
 @keyframes fadeInOut {
   0%, 100% { opacity: 0.4; }
   50% { opacity: 1; }

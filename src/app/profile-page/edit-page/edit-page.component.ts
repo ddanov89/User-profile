@@ -67,13 +67,12 @@ export class EditPageComponent implements OnInit, OnDestroy {
     this.actionsSubscription = this.actions$
       .pipe(ofType(updateUserSuccess))
       .subscribe(() => {
-        this.isSubmitting = false; // stop loader
+        this.isSubmitting = false;
       });
     this.store.dispatch(loadUsers());
 
-    // Select the user by ID from the store
     this.userSubscription = this.store
-      .pipe(select(selectUserById(userId))) // Selector to get user by ID
+      .pipe(select(selectUserById(userId)))
       .subscribe((user: Profile | undefined) => {
         if (user) {
           this.setAvatarUrl(user.avatar);
@@ -121,25 +120,22 @@ export class EditPageComponent implements OnInit, OnDestroy {
     };
 
     this.isSubmitting = true;
-    // Dispatch the updateUser action to update the state via NgRx
     this.store.dispatch(updateUser({ userId, data: updatedProfile }));
   }
 
   onImageChange(event: any): void {
-    const file = event.target.files[0]; // Get the selected file
+    const file = event.target.files[0];
 
     if (file) {
-      // Check if the file type is an image
       if (!file.type.startsWith('image/')) {
         alert('Please select a valid image file.');
         return;
       }
 
-      // Create a file reader to read the image as a base64 string
       const reader = new FileReader();
 
       reader.onload = () => {
-        this.avatarUrl = reader.result as string; // Set the new image URL to the base64 string
+        this.avatarUrl = reader.result as string;
       };
 
       reader.onerror = (error) => {
@@ -147,23 +143,21 @@ export class EditPageComponent implements OnInit, OnDestroy {
         alert('There was an error uploading your image.');
       };
 
-      reader.readAsDataURL(file); // Read the file as base64
+      reader.readAsDataURL(file);
     }
   }
 
   setAvatarUrl(avatar: File | string): void {
     if (typeof avatar === 'string') {
-      // If it's a string (Base64 or URL), assign directly
       this.avatarUrl = avatar;
     } else if (avatar instanceof File) {
-      // If it's a File, use FileReader to read as Base64
       const reader = new FileReader();
 
       reader.onload = () => {
-        this.avatarUrl = reader.result as string; // Convert file to Base64 string
+        this.avatarUrl = reader.result as string;
       };
 
-      reader.readAsDataURL(avatar); // Read the file as Base64
+      reader.readAsDataURL(avatar);
     }
   }
 
@@ -174,7 +168,7 @@ export class EditPageComponent implements OnInit, OnDestroy {
 
     const updatedUserProfiles = userProfiles.map((user: any) =>
       user.id === updatedUser.id
-        ? { ...user, ...updatedUser } // Merge only updated fields
+        ? { ...user, ...updatedUser }
         : user
     );
 

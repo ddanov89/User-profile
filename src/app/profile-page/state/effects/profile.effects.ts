@@ -38,7 +38,6 @@ export class ProfileEffects {
             return of(loadUsersSuccess({ users }));
           }
 
-          // Fallback to API call if no localStorage data
           return this.profileService.getUsers().pipe(
             map((users) => loadUsersSuccess({ users })),
             catchError((error) => of(loadUsersFailure({ error })))
@@ -103,7 +102,6 @@ export class ProfileEffects {
 
           // Save the updated users back to localStorage
           localStorage.setItem('users', JSON.stringify(updatedUsers));
-          //Show success message
           this.snackBar.toggleSnackBar(successMessages.userUpdateSuccess);
         })
       ),
@@ -129,6 +127,6 @@ export class ProfileEffects {
           this.router.navigate([`/profile-page/${user.id}`]);
         })
       ),
-    { dispatch: false } // This effect does not dispatch any further actions
+    { dispatch: false }
   );
 }
